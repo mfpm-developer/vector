@@ -1,0 +1,451 @@
+#:import Factory kivy.factory.Factory
+
+<MainLayout>:
+	id: main_layout
+	RelativeLayout:
+		id: drawing_area
+		size_hint: 1 - root.ids.main_menu.size_hint[0], 1 - root.ids.command_layout.size_hint[1]
+		pos_hint: {"x": root.ids.main_menu.size_hint[0], "top": 1 - root.ids.command_layout.size_hint[1]}
+		canvas:
+			Color:
+				rgb: 0, 0, 0.2
+			Rectangle:
+				size: self.size
+				pos: [0, 0]
+
+	RelativeLayout:
+		id: command_layout
+		size_hint: 1, 0.10
+		pos_hint: {"x": 0, "top": 1}
+		RelativeLayout:
+			id: prompt_input
+			size_hint: 1, 0.33
+			pos_hint: {"x": 0, "top": 1}
+			TextInput:
+				id: prompt
+				font_size: "15dp"
+				text_hint: "Enter a command"
+				size_hint: 1 - 0.10 * root.height / root.width, 1
+				pos_hint: {"left": 0, "top": 1}
+				foreground_color: 1, 1, 1, 1
+				background_color: 93/255, 109/255, 126/255, 1
+				multiline: False
+				on_text_validate: root.run_user_command()
+			Button:
+				id: run_command_button
+				font_size: "15dp"
+				text: "Run"
+				size_hint: 0.10 * root.height / root.width, 1
+				pos_hint: {"right": 1, "top": 1}
+				background_color: 255/255, 215/255, 0, 1
+				on_press: root.run_user_command()
+		RelativeLayout:
+			id: command_output
+			size_hint: 1, 0.67
+			pos_hint: {"x": 0, "bottom": 0}
+			canvas:
+				Color:
+					rgb: 0.10, 0.10, 0.10
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			Label:
+				id: command_label
+				text_size: self.size
+				font_size: "15dp"
+				padding: [5, 5]
+				valign: "top"
+				halign: "left"
+				text: '> \n'
+
+
+	RelativeLayout:
+		id: main_menu
+		size_hint: 0.075 * root.height / root.width, 1
+		pos_hint: {"x": -0.10 * root.height / root.width, "top": 1}
+		MainMenuButton:
+			id: draw_button
+			text: "Draw"
+			pos_hint: {"x": 0, "top": 1}
+			on_press: Factory.DrawMenu().open()
+		MainMenuButton:
+			id: tools_button
+			text: "Tools"
+			pos_hint: {"x": 0, "top": 0.90}
+			on_press: Factory.ToolsMenu().open()
+		MainMenuButton:
+			id: insert_button
+			text: "Insert"
+			pos_hint: {"x": 0, "top": 0.80}
+			on_press: Factory.InsertMenu().open()
+		MainMenuButton:
+			id: file_button
+			text: "File"
+			pos_hint: {"x": 0, "top": 0.70}
+			on_press: Factory.FileMenu().open()
+		MainMenuButton:
+			id: layouts_button
+			text: "Layouts"
+			pos_hint: {"x": 0, "top": 0.60}
+			on_press: Factory.LayoutMenu().open()
+		MainMenuButton:
+			id: settings_button
+			text: "Settings"
+			pos_hint: {"x": 0, "top": 0.50}
+			on_press: Factory.SettingsMenu().open()
+		MainMenuButton:
+			id: Zoom_in_button
+			text: "Zoom In"
+			pos_hint: {"x": 0, "top": 0.40}
+			on_press: root.zoom_in()
+		MainMenuButton:
+			id: Zoom_out_button
+			text: "Zoom Out"
+			pos_hint: {"x": 0, "top": 0.30}
+			on_press: root.zoom_out()
+		MainMenuButton:
+			id: move_drawing_button
+			text: "Move\nDrawing"
+			pos_hint: {"x": 0, "top": 0.20}
+			on_press: root.move_drawing()
+		MainMenuButton:
+			id: more_button
+			text: "More"
+			pos_hint: {"x": 0, "top": 0.10}
+			on_press: Factory.MoreMenu().open()
+
+	RelativeLayout:
+		id: take_menu_button_layout
+		size_hint: 0.05 * root.height / root.width, 0.05
+		pos_hint: {"center_x": 0.5, "bottom": 0}
+		Button:
+			id: menu_button
+			text: "°°°"
+			size_hint: 1, 1
+			background_color: 0, 0, 0.34, 0
+			on_press: root.take_menu()
+			canvas.before:
+				Color:
+					rgba: 46/255, 134/255, 193/255, 1
+				RoundedRectangle:
+					size: self.size
+					pos: self.pos
+					radius: [60]
+
+<MainMenuButton@Button>
+	font_size: "15dp"
+	size_hint: 1, 0.10
+	background_color: 0, 0, 1, 1
+
+<PopupWindowButton@Button>
+	font_size: "15dp"
+	background_color: 0, 0.5, 0, 1
+
+<DrawMenu@Popup>
+	auto_dismiss: True
+	title: "Draw Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: line_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Line"
+			on_press: app.root.change_active_tool("Line"); root.dismiss()
+		PopupWindowButton:
+			id: polyline_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "Polyline"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: rectangle
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20, "top": 1}
+			text: "Rectangle"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: circle_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.30, "top": 1}
+			text: "Circle"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: arc_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.40, "top": 1}
+			text: "Arc"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: text_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.50, "top": 1}
+			text: "Text"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: free_hand_drawing_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.60, "top": 1}
+			text: "Hand"
+			on_press: app.root.change_active_tool("Free Hand Drawing"); root.dismiss()
+
+<ToolsMenu@Popup>
+	auto_dismiss: True
+	title: "Tools Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: delete_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Delete"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: split_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "Split"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: explode_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20 , "top": 1}
+			text: "Explode"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: fillet_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.30, "top": 1}
+			text: "Fillet"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: chamfer_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.40, "top": 1}
+			text: "Chamfer"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: extend_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.50, "top": 1}
+			text: "Extend"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: draworder_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.60, "top": 1}
+			text: "Draw\nOrder"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: move_object_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.70, "top": 1}
+			text: "Move\nObject"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: center_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.80, "top": 1}
+			text: "Center"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: rotate_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.90, "top": 1}
+			text: "Rotate"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: ortho_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Ortho"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: snap_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Snap"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: rotate_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Straight\nDimension"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: rotate_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.30, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Inclined\nDimension"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: rotate_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.40, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Angular\nDimension"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: undo_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.50, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Undo"
+			on_press: app.root.undo_last(); root.dismiss()
+		PopupWindowButton:
+			id: Redo
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.60, "top": 1 - 1 * 0.10 * root.width / root.height}
+			text: "Redo"
+			on_press: app.root.redo_last(); root.dismiss()
+
+<InsertMenu@Popup>
+	auto_dismiss: True
+	title: "Insert Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: images_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Images"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: pdf_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "PDF"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: project_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20, "top": 1}
+			text: "Project"
+			on_press: root.dismiss()
+
+<FileMenu@Popup>
+	auto_dismiss: True
+	title: "Tools Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: save_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Save"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: save_as_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "Save as"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: load_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20, "top": 1}
+			text: "Load"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: load_recent_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.30, "top": 1}
+			text: "Load\nRecent"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: clear_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.40, "top": 1}
+			text: "Clear"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: new_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.50, "top": 1}
+			text: "New"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: export_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.60, "top": 1}
+			text: "Export"
+			on_press: root.dismiss()
+
+<LayoutMenu@Popup>
+	auto_dismiss: True
+	title: "Layout Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: model_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Model"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: layout1_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "Layout 1"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: add_layout_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.90, "top": 0.10 * root.width / root.height}
+			text: "Add"
+			on_press: root.dismiss()
+
+<SettingsMenu@Popup>
+	auto_dismiss: True
+	title: "Settings Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: model_background_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "Model"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: model_background_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.10, "top": 1}
+			text: "Layouts"
+			on_press: root.dismiss()
+		PopupWindowButton:
+			id: command_layout_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0.20, "top": 1}
+			text: "Command\nPrompt"
+			on_press: exec("app.root.take_command_layout()\nroot.dismiss()")
+
+<MoreMenu@Popup>
+	auto_dismiss: True
+	title: "More Menu"
+	size_hint: [0.80, 0.80]
+	pos_hint: {"center_x": 0.5, "center_y": 0.5}
+	RelativeLayout:
+		size_hint: [1, 1]
+		pos_hint: {"x": 0, "top": 1}
+		PopupWindowButton:
+			id: about_button
+			size_hint: [0.10, 0.10 * root.width / root.height]
+			pos_hint: {"x": 0, "top": 1}
+			text: "About"
+			on_press: root.dismiss()

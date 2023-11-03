@@ -1,0 +1,61 @@
+Draw:
+    - For drawing lines, polylines, circles and any other vectorial object
+        * Line
+        * Polyline
+        * Circle
+        * Arc
+        * Rectangle
+        * Texts
+
+Tools:
+    - To modify vectorial objects, texts, dimensions and other utility tools such as measuring angles
+        * Zoom
+        * Delete
+        * Split
+        * Explode
+        * Fillet
+        * Chamfer
+        * Extend
+        * Draworder
+        * Move in the drawing
+        * Move Object
+        * Center at the origin
+        * Rotate
+        * Ortho
+        * Snap
+        * Dimensions: straight, inclined and angles
+        * Undo
+        * Redo
+    
+Insert:
+    - To insert images, pdf and any other external reference such as another project
+        * Images
+        * PDFs
+        * Antoher project as a block
+        
+File:
+    - Behaviors related to the file
+        * Save
+        * Save as
+        * Load
+        * Load recent file
+        * Clear
+        * New: (Asking to save or discard the current work)
+        * Export: (pdf, jpg, png)
+        
+Layouts:
+    - Model
+    - Layout1: (When clicked for more than 1.5 seconds, ask for a change in properties)
+    - Add a layout: (Aks for name, size and type of coloring)
+    
+Config:
+    - Model background color
+    - Layouts background color
+    
+More:
+    - Additional buttons such as About
+
+
+### NOTE: Remember make a button to make the button panel appear and dissappear. This can be done by displacing the Drawing area to the right when the Button Panel appears and displacing the Drawing area to the left when the Button Panel Dissappears
+### NOTE: Remember to add a prompt to include commands at the top of the screen with an Enter button.
+### NOTE: In order to erase lines, use the midpoint in very little intervals as to get all the pixels of a line
